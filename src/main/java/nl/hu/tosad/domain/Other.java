@@ -3,8 +3,8 @@ package nl.hu.tosad.domain;
 public class Other extends RuleFunction {
     public String body;
 
-    public Other(String id, String body) {
-        super(id);
+    public Other(String id,String code, String body) {
+        super(id, code);
         this.body = body;
     }
 

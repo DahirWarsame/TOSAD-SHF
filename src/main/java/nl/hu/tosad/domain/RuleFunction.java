@@ -5,9 +5,10 @@ public abstract class RuleFunction {
     private String code;
     private String description;
 
-    public RuleFunction(String name) {
+    public RuleFunction(String name, String code) {
         super();
         this.name = name;
+        this.code = code;
     }
 
     public String getName() {
@@ -34,4 +35,12 @@ public abstract class RuleFunction {
         this.description = description;
     }
 
+    @Override
+    public String toString() {
+        return "RuleFunction{" +
+                "name='" + name + '\'' +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

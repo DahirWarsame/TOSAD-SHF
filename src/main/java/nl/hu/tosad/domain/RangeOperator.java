@@ -5,8 +5,8 @@ public class RangeOperator extends RuleFunction {
     private int max;
     private String type;
 
-    public RangeOperator(String id, int min, int max, String type) {
-        super(id);
+    public RangeOperator(String id, String code, int min, int max, String type) {
+        super(id,code);
         this.min = min;
         this.max = max;
         this.type = type;

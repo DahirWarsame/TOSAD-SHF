@@ -80,22 +80,26 @@ public class RuleDAO extends BaseDAO {
                 id = rs.getString("id");
                 subtype = rs.getString("fk_code_operator");
                 type = rs.getString("fk_code_function");
+
                 if (type.equals("RNG")) {
                     min = rs.getInt("min_range_value");
                     max = rs.getInt("max_range_value");
-                    func = new RangeOperator(id, min, max, subtype);
+                    func = new RangeOperator(id, type, min, max, subtype);
                 }
                 if (type.equals("LIS")) {
                     value = rs.getString("list_value");
-                    func = new ListOperator(id, value, subtype);
+                    func = new ListOperator(id, type, value, subtype);
+
                 }
                 if (type.equals("OTH")) {
                     value = rs.getString("other_value");
-                    func = new Other(id, value);
+                    func = new Other(id, type, value);
+
                 }
                 if (type.equals("CMP")) {
                     value = rs.getString("compare_value");
-                    func = new CompareOperator(id, value, subtype);
+                    func = new CompareOperator(id, type, value, subtype);
+
                 }
             }
             rs.close();

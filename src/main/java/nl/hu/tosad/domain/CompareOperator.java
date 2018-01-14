@@ -4,8 +4,8 @@ public class CompareOperator extends RuleFunction {
     private String type;
     private String value1;
 
-    public CompareOperator(String id, String value1, String type) {
-        super(id);
+    public CompareOperator(String id,String code, String value1, String type) {
+        super(id,code);
         this.type = type;
         this.value1 = value1;
     }

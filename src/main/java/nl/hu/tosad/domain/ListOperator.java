@@ -4,8 +4,8 @@ public class ListOperator extends RuleFunction {
     private String type;
     private String list;
 
-    public ListOperator(String id, String list, String type) {
-        super(id);
+    public ListOperator(String id,String code, String list, String type) {
+        super(id,code);
         this.type = type;
         this.list = list;
     }
