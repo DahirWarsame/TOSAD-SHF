@@ -1,7 +1,8 @@
 package nl.hu.tosad.webservices;
 
-import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class BaseDAO {
     private String connectionURL = "jdbc:oracle:thin:@ondora02.hu.nl:8521/cursus02.hu.nl";
@@ -18,14 +19,14 @@ public class BaseDAO {
         }
     }
 
-    Connection getConnection(){
+    Connection getConnection() {
         // URL, User and Password
         try {
-			con = DriverManager.getConnection(connectionURL, username, password);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            con = DriverManager.getConnection(connectionURL, username, password);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return con;
     }
 

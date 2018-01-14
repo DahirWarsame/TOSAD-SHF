@@ -148,3 +148,5 @@ Temporary Items
 .apdisk
 
 /.idea/
+/.classpath
+/tosad.iml
