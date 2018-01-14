@@ -108,60 +108,61 @@ public class RuleDAO extends BaseDAO {
         return func;
     }
 
-    public RuleType getRuleTypebyID(int i) {
-        RuleType rt = null;
-        try (Connection conn = super.getConnection()) {
-            conn.createStatement().execute("alter session set current_schema=TOSAD_2017_2C_TEAM2");
-            PreparedStatement statement = conn.prepareStatement("SELECT * from business_rule_Type where id=" + i);
-            statement.executeQuery();
-            ResultSet rs = statement.executeQuery();
-
-            String id;
-            String code;
-            String type;
-            String desc;
-            String table = "";
-            String column = "";
-
-            while (rs.next()) {
-                id = rs.getString("id");
-                code = rs.getString("code");
-                if (code.equals("A")) {
-                    type = "Attribute";
-                    desc = "Attribute Business Rule";
-                    rt = new RuleType(id, code, desc, type, table, column);
-                }
-                if (code.equals("T")) {
-                    type = "Tuple";
-                    desc = "Tuple Business Rule";
-                    rt = new RuleType(id, code, desc, type, table, column);
-                }
-                if (code.equals("I")) {
-                    type = "Inter-Entity";
-                    desc = "Inter-Entity Business Rule";
-                    rt = new RuleType(id, code, desc, type, table, column);
-                }
-                if (code.equals("E")) {
-                    type = "Entity";
-                    desc = "Entity Business Rule";
-                    table = rs.getString("othertable");
-                    column = rs.getString("othercolumn");
-                    rt = new RuleType(id, code, desc, type, table, column);
-                }
-                if (code.equals("M")) {
-                    type = "Modify";
-                    desc = "Modify Business Rule";
-                    rt = new RuleType(id, code, desc, type, table, column);
-                }
-            }
-            rs.close();
-            statement.close();
-            conn.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return rt;
-    }
+    public RuleType getRuleTypebyID(int i){
+   	 RuleType rt=null;
+       try (Connection conn = super.getConnection()) {
+       	conn.createStatement().execute("alter session set current_schema=TOSAD_2017_2C_TEAM2");
+           PreparedStatement statement=conn.prepareStatement("SELECT * from business_rule_Type where id="+i);
+           statement.executeQuery();
+           ResultSet rs = statement.executeQuery();
+           
+           String id;
+           String code;
+           String type;
+           String desc;
+           String table="";
+           String column="";
+           
+           while (rs.next()){
+           	id=rs.getString("id");
+           	code=rs.getString("code");
+           	if (code.equals("A")){
+           		type="Attribute";
+           		desc="Attribute Business Rule";
+             	rt=new RuleType(id, code, desc, type, table, column);
+           	}
+         	if (code.equals("T")){
+           		type="Tuple";
+           		desc="Tuple Business Rule";
+                column=rs.getString("othercolumn");
+             	rt=new RuleType(id, code, desc, type, table, column);
+           	}
+         	if (code.equals("I")){
+           		type="Inter-Entity";
+           		desc="Inter-Entity Business Rule";
+                table=rs.getString("othertable");
+           		column=rs.getString("othercolumn");
+             	rt=new RuleType(id, code, desc, type, table, column);
+           	}
+         	if (code.equals("E")){
+           		type="Entity";
+           		desc="Entity Business Rule";
+             	rt=new RuleType(id, code, desc, type, table, column);
+           	}
+         	if (code.equals("M")){
+           		type="Modify";
+           		desc="Modify Business Rule";
+             	rt=new RuleType(id, code, desc, type, table, column);
+           	}
+           }
+           rs.close();
+           statement.close();
+           conn.close();
+           
+       } catch (SQLException e) {
+           e.printStackTrace();
+       }
+       return rt;
+   }
 }
 

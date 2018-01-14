@@ -34,12 +34,4 @@ public abstract class RuleFunction {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "RuleFunction{" +
-                "name='" + name + '\'' +
-                ", code='" + code + '\'' +
-                ", description='" + description + '\'' +
-                '}';
-    }
 }
