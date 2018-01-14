@@ -1,22 +1,15 @@
 package nl.hu.tosad.webservices;
 
-import java.util.ArrayList;
-
-import nl.hu.tosad.domain.RuleType;
+import nl.hu.tosad.domain.RangeOperator;
+import nl.hu.tosad.domain.Rule;
 
 public class test {
 	public static void main(String[] args){
-		FactoryProducer af=new FactoryProducer();
-		AbstractFactory fac=null;
-		RuleDAO r=new RuleDAO();
-		ArrayList<RuleType> rul=r.getRules();
-		for (RuleType ru:rul){
-			System.out.println(ru.getName());
-			System.out.println(ru.getType());
-			fac=af.getFactory(ru.getName());
-			fac.getCompareOperator(value, type)
-			
+		RuleDAO dao=new RuleDAO();
+		Rule r=dao.getRulebyID(1);
+		System.out.println(r.getType().getDesc());
+		System.out.println(r.getTable());
+		if (r.getFunction().equals(RangeOperator.class))
+		System.out.println(r.getFunction().getCode());
 		}
 	}
-
-}

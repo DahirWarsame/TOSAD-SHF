@@ -1,10 +1,10 @@
 package nl.hu.tosad.domain;
 
-public class Other extends Operator{
+public class Other extends RuleFunction{
 public String body;
 
-public Other(String body) {
-	super();
+public Other(String id,String body) {
+	super(id);
 	this.body = body;
 }
 

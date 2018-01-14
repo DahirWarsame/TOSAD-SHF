@@ -2,12 +2,12 @@ package nl.hu.tosad.domain;
 
 import java.util.ArrayList;
 
-public class ListOperator extends Operator{
+public class ListOperator extends RuleFunction{
 private String type;
-private ArrayList<String> list;
+private String list;
 
-public ListOperator(ArrayList<String>list, String type) {
-	super();
+public ListOperator(String id, String list, String type) {
+	super(id);
 	this.type = type;
 	this.list=list;
 }
