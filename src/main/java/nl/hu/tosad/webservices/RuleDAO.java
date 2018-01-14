@@ -127,18 +127,19 @@ public class RuleDAO extends BaseDAO {
          	if (code.equals("T")){
            		type="Tuple";
            		desc="Tuple Business Rule";
+                column=rs.getString("othercolumn");
              	rt=new RuleType(id, code, desc, type, table, column);
            	}
          	if (code.equals("I")){
            		type="Inter-Entity";
            		desc="Inter-Entity Business Rule";
+                table=rs.getString("othertable");
+           		column=rs.getString("othercolumn");
              	rt=new RuleType(id, code, desc, type, table, column);
            	}
          	if (code.equals("E")){
            		type="Entity";
            		desc="Entity Business Rule";
-           		table=rs.getString("othertable");
-           		column=rs.getString("othercolumn");
              	rt=new RuleType(id, code, desc, type, table, column);
            	}
          	if (code.equals("M")){
