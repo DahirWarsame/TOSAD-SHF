@@ -29,7 +29,8 @@ public class Controller {
         //TODO call SQL generator
 
         for (Rule rule : rules) {
-            System.out.println(translator.generateDemo(rule));
+            System.out.println(translator.generateCode(rule, rule.getCode()));
+            System.out.println();
 //            String type = rule.getFunction().getCode();
 //            System.out.println(rule);
 //            if (type.equals("RNG")) {
