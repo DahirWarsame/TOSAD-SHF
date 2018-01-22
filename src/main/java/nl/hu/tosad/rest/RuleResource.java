@@ -15,7 +15,7 @@ public class RuleResource {
 	@Path("get/{id}+{lan}")
 	@GET
 	public String printRule(@PathParam("id") String code, @PathParam("lan") String language) throws Exception {
-		domain.printRule(data.getRuleByID(code),language);
+		domain.printRule(data.getRuleByID(code), code, language);
 		return "Rule collected!";
 	}
 }

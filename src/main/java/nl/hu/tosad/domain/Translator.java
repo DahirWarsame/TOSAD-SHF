@@ -2,6 +2,6 @@ package nl.hu.tosad.domain;
 
 public abstract class Translator {
 
-	public abstract void generateDemo(Rule rule);
+	public abstract String generateCode(Rule rule, String name);
 
 }

@@ -1,6 +1,6 @@
 package nl.hu.tosad.domain;
 
-public class PLSQLTranslator {
+public class PLSQLTranslator extends Translator{
 
     public PLSQLTranslator() {
 
