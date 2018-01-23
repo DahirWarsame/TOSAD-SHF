@@ -31,12 +31,32 @@ public class PLSQLTranslator extends Translator{
                 result += "\nEND " + name+";";
                 break;
 
+            case "ACMP" :
+                
+                break;
+
+            case "ALIS" :
+
+                break;
+
             case "AOTH" :
                 Other otherFunction = ((Other) rule.getFunction());
 
                 result += "\nBEGIN\n\t";
                 result += otherFunction.getBody();
                 result += "\nEND " + name;
+                break;
+
+            case "TCMP" :
+
+                break;
+
+            case "TOTH" :
+
+                break;
+
+            case "ICMP" :
+
                 break;
 
             default :
