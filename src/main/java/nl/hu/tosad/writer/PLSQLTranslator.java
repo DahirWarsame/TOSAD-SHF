@@ -32,7 +32,7 @@ public class PLSQLTranslator extends Translator{
                 break;
 
             case "ACMP" :
-                
+
                 break;
 
             case "ALIS" :
