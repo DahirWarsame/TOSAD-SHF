@@ -73,7 +73,7 @@ public class PLSQLTranslator extends Translator{
                         result.append(",");
                     }
                 }
-                result.append(") \n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'" + name + " was triggered\');");
+                result.append("))) \n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'" + name + " was triggered\');");
                 result.append("\n\tEND IF;");
                 result.append("\nEND " + name+";");
                 break;
