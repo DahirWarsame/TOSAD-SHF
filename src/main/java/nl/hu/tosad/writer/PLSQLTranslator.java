@@ -17,7 +17,7 @@ public class PLSQLTranslator extends Translator{
     }
 
     public String generateCode(Rule rule, String name) {
-    	StringBuilder result = new StringBuilder("CREATE OR REPLACE TRIGGER " + name);
+        StringBuilder result = new StringBuilder("CREATE OR REPLACE TRIGGER " + name);
         result.append("\nBEFORE ").append(rule.getTrigger());
         result.append("\nON ").append(rule.getTable());
         result.append("\nFOR EACH ROW");
@@ -30,96 +30,143 @@ public class PLSQLTranslator extends Translator{
 
                 result.append("\nBEGIN");
                 result.append("\n\tIF (NOT (:new."+rule.getAttribute());
-                result.append(rangeFunction.getType().equals("NB") ? " NOT BETWEEN " : " BETWEEN ");
+                result.append(" ").append(translateOperator(rangeFunction.getType())).append(" ");
                 result.append(rangeFunction.getMin()+" AND "+rangeFunction.getMax() + "))");
                 result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'" + name + " was triggered\');");
                 result.append("\n\tEND IF;");
-                result.append("\nEND " + name+";");
+                result.append("\nEND ").append(name).append(";");
                 break;
-            
+
             case "ACMP" :
                 CompareOperator compareFunction = ((CompareOperator) rule.getFunction());
-                
+
                 result.append("\nBEGIN");
-                result.append("\n\tIF (NOT (:new."+rule.getAttribute());
-                result.append(getSymbol(compareFunction.getType()));
-                if (isNumeric(compareFunction.getValue1())==true){
-                	result.append(compareFunction.getValue1() + "))");
+                result.append("\n\tIF (NOT (:new.").append(rule.getAttribute());
+                result.append(" ").append(translateOperator(compareFunction.getType())).append(" ");
+                if (isNumeric(compareFunction.getValue())){
+                    result.append(compareFunction.getValue() + "))");
                 }
                 else{
-                	result.append("'"+compareFunction.getValue1() + "'))");
+                    result.append("\'"+compareFunction.getValue() + "\'))");
                 }
-                result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'" + name + " was triggered\');");
+                result.append("\n\tTHEN");
+                result.append("\n\tRAISE_APPLICATION_ERROR (-20001,\'").append(name).append(" was triggered\');");
                 result.append("\n\tEND IF;");
-                result.append("\nEND " + name+";");
+                result.append("\nEND ").append(name).append(";");
+
                 break;
-            
+
             case "ALIS" :
             	ListOperator listFunction = ((ListOperator) rule.getFunction());
+
             	List<String> list = new ArrayList<String>(Arrays.asList(listFunction.getList().split(",")));
                 int count = 0;
                 result.append("\nBEGIN");
                 result.append("\n\tIF (NOT (:new."+rule.getAttribute());
-                result.append(" "+getSymbol(listFunction.getType())+" ("); 
+                result.append(" "+translateOperator(listFunction.getType())+" (");
                 for (String s : list){
                     count+=1;
                     if (isNumeric(s)==true){
-                    result.append(s);	
+                    result.append(s);
                     }
                     else{
-                    result.append("'"+s+"'");	
-                    	}           
+                    result.append("'"+s+"'");
+                    	}
                     if (count < list.size()){
                         result.append(",");
                     }
                 }
                 result.append("))) \n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'" + name + " was triggered\');");
                 result.append("\n\tEND IF;");
-                result.append("\nEND " + name+";");
+                result.append("\nEND ").append(name).append(";");
+
                 break;
 
             case "AOTH" :
-                Other otherFunction = ((Other) rule.getFunction()); 
+                Other otherFunction = ((Other) rule.getFunction());
+
+                result.append("\nBEGIN\n\t");
                 result.append(otherFunction.getBody());
+                result.append("\nEND ").append(name).append(";");
+                break;
+
+            case "TCMP" :
+                CompareOperator tupleCompareFunction = ((CompareOperator) rule.getFunction());
+
+                result.append("\nBEGIN");
+                result.append("\n\tIF (NOT (:new.").append(rule.getAttribute()).append(" ");
+                result.append(translateOperator(tupleCompareFunction.getType())).append(" ");
+                result.append(tupleCompareFunction.getValue()).append("))");
+                result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'").append(name).append(" was triggered\');");
+                result.append("\n\tEND IF;");
+                result.append("\nEND ").append(name).append(";");
+                break;
+
+            case "TOTH" :
+                Other tupleOtherFunction = ((Other) rule.getFunction());
+
+                result.append("\nBEGIN\n\t");
+                result.append(tupleOtherFunction.getBody());
+                result.append("\nEND ").append(name).append(";");
+                break;
+
+            case "ICMP" :
 
                 break;
 
             default :
-            	 result = new StringBuilder("This business rule type is currently not available in PL SQL");
-                 break;
+                result = new StringBuilder("This business rule type can currently not be translated to PL SQL");
+                break;
         }
         return result.toString();
     }
-    public String getSymbol(String input){
-    	 String symbol="";
-         if (input.equals("E")){
-         	symbol="=";
-         }
-         else if (input.equals("NE")){
-         	symbol="!=";
-         }
-         else if (input.equals("GT")){
-         	symbol=">";
-         }
-         else if (input.equals("LT")){
-         	symbol="<";
-         }
-         else if (input.equals("LOET")){
-         	symbol="<=";
-         }
-         else if (input.equals("GOET")){
-         	symbol=">=";
-         }
-         else if (input.equals("I")){
-          	symbol="in";
-          }
-         else if (input.equals("NI")){
-           	symbol="not in";
-           }
-         return symbol;
+
+    public String translateOperator(String code) {
+        String result = "";
+
+        switch (code){
+            case "B" :
+                result = "BETWEEN";
+                break;
+            case "NB" :
+                result = "NOT BETWEEN";
+                break;
+            case "NE" :
+                result =  "=!";
+                break;
+            case "E" :
+                result = "=!";
+                break;
+            case "LT" :
+                result = "<";
+                break;
+            case "GT" :
+                result = ">";
+                break;
+            case "LOET" :
+                result = "<=";
+                break;
+            case "GOET" :
+                result = ">=";
+                break;
+        }
+
+        return result;
     }
-    
-    public boolean isNumeric(String s) {  
-        return s != null && s.matches("[-+]?\\d*\\.?\\d+");  
-    }  
+
+    public String generateDemo(Rule rule) {
+        String result = "";
+
+        result += "\nHERE BE CONSTRAINT OF TYPE " + rule.getType().getDesc() + "\n";
+        result += "\n\tAFTER " + rule.getTrigger();
+        result += "\n\tON " + rule.getTable();
+        result += "\n\tCONCERNING " + rule.getAttribute() + "\n";
+        result += "\nCORRECT AND COMPLETE PL SQL STATEMENT WILL FOLLOW SOON(TM)";
+
+        return result;
+    }
+
+    public boolean isNumeric(String s) {
+        return s != null && s.matches("[-+]?\\d*\\.?\\d+");
+    }
 }
