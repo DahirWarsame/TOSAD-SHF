@@ -2,14 +2,36 @@ package nl.hu.tosad.domain;
 
 public class CompareOperator extends RuleFunction {
     private String type;
-    private String value1;
+    private String value;
 
-    public CompareOperator(String id,String code, String value1, String type) {
+    public CompareOperator(String id, String code, String value, String type) {
         super(id,code);
-        this.type = type;
-        this.value1 = value1;
+        this.type = defineOperator(type);
+        this.value = value;
     }
-
+    private String defineOperator(String operatorType) {
+        switch (operatorType){
+            case "NE" :
+                operatorType =  "=!";
+                break;
+            case "E" :
+                operatorType = "=!";
+                break;
+            case "LT" :
+                operatorType = "<";
+                break;
+            case "GT" :
+                operatorType = ">";
+                break;
+            case "LOET" :
+                operatorType = "<=";
+                break;
+            case "GOET" :
+                operatorType = ">=";
+                break;
+        }
+        return operatorType;
+    }
     public String getType() {
         return type;
     }
@@ -18,11 +40,11 @@ public class CompareOperator extends RuleFunction {
         this.type = type;
     }
 
-    public String getValue1() {
-        return value1;
+    public String getValue() {
+        return value;
     }
 
-    public void setValue1(String value1) {
-        this.value1 = value1;
+    public void setValue(String value) {
+        this.value = value;
     }
 }

@@ -1,8 +1,9 @@
 package nl.hu.tosad.writer;
 
-import nl.hu.tosad.domain.Other;
-import nl.hu.tosad.domain.RangeOperator;
-import nl.hu.tosad.domain.Rule;
+import nl.hu.tosad.domain.*;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class PLSQLTranslator extends Translator{
 
@@ -11,10 +12,10 @@ public class PLSQLTranslator extends Translator{
     }
 
     public String generateCode(Rule rule, String name) {
-        String result = "CREATE OR REPLACE TRIGGER " + name;
-        result += "\nBEFORE " + rule.getTrigger();
-        result += "\nON " + rule.getTable();
-        result += "\nFOR EACH ROW";
+        StringBuilder result = new StringBuilder("CREATE OR REPLACE TRIGGER " + name);
+        result.append("\nBEFORE ").append(rule.getTrigger());
+        result.append("\nON ").append(rule.getTable());
+        result.append("\nFOR EACH ROW");
 
         String ruleCode = rule.getType().getCode() + rule.getFunction().getCode();
 
@@ -22,29 +23,56 @@ public class PLSQLTranslator extends Translator{
             case "ARNG" :
                 RangeOperator rangeFunction = ((RangeOperator) rule.getFunction());
 
-                result += "\nBEGIN";
-                result += "\n\tIF (NOT (:new."+rule.getAttribute();
-                result += rangeFunction.getType().equals("NB") ? " NOT BETWEEN " : " BETWEEN ";
-                result += rangeFunction.getMin()+" AND "+rangeFunction.getMax() + "))";
-                result += "\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'" + name + " was triggered\');";
-                result += "\n\tEND IF;";
-                result += "\nEND " + name+";";
+                result.append("\nBEGIN");
+                result.append("\n\tIF (NOT (:new.").append(rule.getAttribute());
+                result.append(rangeFunction.getType().equals("NB") ? " NOT BETWEEN " : " BETWEEN ");
+                result.append(rangeFunction.getMin()).append(" AND ").append(rangeFunction.getMax()).append("))");
+                result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'").append(name).append(" was triggered\');");
+                result.append("\n\tEND IF;");
+                result.append("\nEND ").append(name).append(";");
                 break;
 
             case "ACMP" :
+                CompareOperator compareOperator = ((CompareOperator) rule.getFunction());
+
+                result.append("\nBEGIN");
+                result.append("\n\tIF (NOT (:new.").append(rule.getAttribute());
+                result.append(compareOperator.getType()).append(compareOperator.getValue()).append("))");
+                result.append("\n\tTHEN");
+                result.append("\n\tRAISE_APPLICATION_ERROR (-20001,\'").append(name).append(" was triggered\');");
+                result.append("\n\tEND IF;");
+                result.append("\nEND");
 
                 break;
 
             case "ALIS" :
+                ListOperator listFunction = ((ListOperator) rule.getFunction());
+                listFunction.getList();
+                result.append("\nBEGIN");
+                result.append("\nIF (NOT (:new.").append(rule.getAttribute()).append(" IN (");
+                int count = 0;
+                for (String s : listFunction.getList())
+                {
+                    count+=1;
+                    result.append(s);
+                    if (count < listFunction.getList().size()){
+                        result.append(",");
+                    }
+                }
+                result.append("\n\t)");
+                result.append("\n\tTHEN");
+                result.append("\n\tRAISE_APPLICATION_ERROR (-20001,\'").append(name).append(" was triggered\');");
+                result.append("\n\tEND IF;");
+                result.append("\nEND");
 
                 break;
 
             case "AOTH" :
                 Other otherFunction = ((Other) rule.getFunction());
 
-                result += "\nBEGIN\n\t";
-                result += otherFunction.getBody();
-                result += "\nEND " + name;
+                result.append("\nBEGIN\n\t");
+                result.append(otherFunction.getBody());
+                result.append("\nEND ").append(name);
                 break;
 
             case "TCMP" :
@@ -60,10 +88,10 @@ public class PLSQLTranslator extends Translator{
                 break;
 
             default :
-                result = "This business rule type is currently not available in PL SQL";
+                result = new StringBuilder("This business rule type is currently not available in PL SQL");
                 break;
         }
-        return result;
+        return result.toString();
     }
 
     public String generateDemo(Rule rule) {
