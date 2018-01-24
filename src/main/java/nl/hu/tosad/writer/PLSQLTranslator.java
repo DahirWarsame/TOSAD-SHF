@@ -1,9 +1,14 @@
 package nl.hu.tosad.writer;
 
-import nl.hu.tosad.domain.*;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import nl.hu.tosad.domain.CompareOperator;
+import nl.hu.tosad.domain.ListOperator;
+import nl.hu.tosad.domain.Other;
+import nl.hu.tosad.domain.RangeOperator;
+import nl.hu.tosad.domain.Rule;
 
 public class PLSQLTranslator extends Translator{
 
@@ -12,7 +17,7 @@ public class PLSQLTranslator extends Translator{
     }
 
     public String generateCode(Rule rule, String name) {
-        StringBuilder result = new StringBuilder("CREATE OR REPLACE TRIGGER " + name);
+    	StringBuilder result = new StringBuilder("CREATE OR REPLACE TRIGGER " + name);
         result.append("\nBEFORE ").append(rule.getTrigger());
         result.append("\nON ").append(rule.getTable());
         result.append("\nFOR EACH ROW");
@@ -24,86 +29,97 @@ public class PLSQLTranslator extends Translator{
                 RangeOperator rangeFunction = ((RangeOperator) rule.getFunction());
 
                 result.append("\nBEGIN");
-                result.append("\n\tIF (NOT (:new.").append(rule.getAttribute());
+                result.append("\n\tIF (NOT (:new."+rule.getAttribute());
                 result.append(rangeFunction.getType().equals("NB") ? " NOT BETWEEN " : " BETWEEN ");
-                result.append(rangeFunction.getMin()).append(" AND ").append(rangeFunction.getMax()).append("))");
-                result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'").append(name).append(" was triggered\');");
+                result.append(rangeFunction.getMin()+" AND "+rangeFunction.getMax() + "))");
+                result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'" + name + " was triggered\');");
                 result.append("\n\tEND IF;");
-                result.append("\nEND ").append(name).append(";");
+                result.append("\nEND " + name+";");
                 break;
-
+            
             case "ACMP" :
-                CompareOperator compareOperator = ((CompareOperator) rule.getFunction());
-
+                CompareOperator compareFunction = ((CompareOperator) rule.getFunction());
+                
                 result.append("\nBEGIN");
-                result.append("\n\tIF (NOT (:new.").append(rule.getAttribute());
-                result.append(compareOperator.getType()).append(compareOperator.getValue()).append("))");
-                result.append("\n\tTHEN");
-                result.append("\n\tRAISE_APPLICATION_ERROR (-20001,\'").append(name).append(" was triggered\');");
+                result.append("\n\tIF (NOT (:new."+rule.getAttribute());
+                result.append(getSymbol(compareFunction.getType()));
+                if (isNumeric(compareFunction.getValue1())==true){
+                	result.append(compareFunction.getValue1() + "))");
+                }
+                else{
+                	result.append("'"+compareFunction.getValue1() + "'))");
+                }
+                result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'" + name + " was triggered\');");
                 result.append("\n\tEND IF;");
-                result.append("\nEND");
-
+                result.append("\nEND " + name+";");
                 break;
-
+            
             case "ALIS" :
-                ListOperator listFunction = ((ListOperator) rule.getFunction());
-                listFunction.getList();
-                result.append("\nBEGIN");
-                result.append("\nIF (NOT (:new.").append(rule.getAttribute()).append(" IN (");
+            	ListOperator listFunction = ((ListOperator) rule.getFunction());
+            	List<String> list = new ArrayList<String>(Arrays.asList(listFunction.getList().split(",")));
                 int count = 0;
-                for (String s : listFunction.getList())
-                {
+                result.append("\nBEGIN");
+                result.append("\n\tIF (NOT (:new."+rule.getAttribute());
+                result.append(" "+getSymbol(listFunction.getType())+" ("); 
+                for (String s : list){
                     count+=1;
-                    result.append(s);
-                    if (count < listFunction.getList().size()){
+                    if (isNumeric(s)==true){
+                    result.append(s);	
+                    }
+                    else{
+                    result.append("'"+s+"'");	
+                    	}           
+                    if (count < list.size()){
                         result.append(",");
                     }
                 }
-                result.append("\n\t)");
-                result.append("\n\tTHEN");
-                result.append("\n\tRAISE_APPLICATION_ERROR (-20001,\'").append(name).append(" was triggered\');");
+                result.append(") \n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'" + name + " was triggered\');");
                 result.append("\n\tEND IF;");
-                result.append("\nEND");
-
+                result.append("\nEND " + name+";");
                 break;
 
             case "AOTH" :
-                Other otherFunction = ((Other) rule.getFunction());
-
-                result.append("\nBEGIN\n\t");
+                Other otherFunction = ((Other) rule.getFunction()); 
                 result.append(otherFunction.getBody());
-                result.append("\nEND ").append(name);
-                break;
-
-            case "TCMP" :
-
-                break;
-
-            case "TOTH" :
-
-                break;
-
-            case "ICMP" :
 
                 break;
 
             default :
-                result = new StringBuilder("This business rule type is currently not available in PL SQL");
-                break;
+            	 result = new StringBuilder("This business rule type is currently not available in PL SQL");
+                 break;
         }
         return result.toString();
     }
-
-    public String generateDemo(Rule rule) {
-        String result = "";
-
-        result += "\nHERE BE CONSTRAINT OF TYPE " + rule.getType().getDesc() + "\n";
-        result += "\n\tAFTER " + rule.getTrigger();
-        result += "\n\tON " + rule.getTable();
-        result += "\n\tCONCERNING " + rule.getAttribute() + "\n";
-        result += "\nCORRECT AND COMPLETE PL SQL STATEMENT WILL FOLLOW SOON(TM)";
-
-        return result;
+    public String getSymbol(String input){
+    	 String symbol="";
+         if (input.equals("E")){
+         	symbol="=";
+         }
+         else if (input.equals("NE")){
+         	symbol="!=";
+         }
+         else if (input.equals("GT")){
+         	symbol=">";
+         }
+         else if (input.equals("LT")){
+         	symbol="<";
+         }
+         else if (input.equals("LOET")){
+         	symbol="<=";
+         }
+         else if (input.equals("GOET")){
+         	symbol=">=";
+         }
+         else if (input.equals("I")){
+          	symbol="in";
+          }
+         else if (input.equals("NI")){
+           	symbol="not in";
+           }
+         return symbol;
     }
-
+    
+    public boolean isNumeric(String s) {  
+        return s != null && s.matches("[-+]?\\d*\\.?\\d+");  
+    }  
 }
