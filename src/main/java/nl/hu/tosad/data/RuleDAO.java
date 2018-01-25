@@ -36,7 +36,6 @@ public class RuleDAO extends BaseDAO{
             String code;
             String table;
             String column;
-            String trigger;
             RuleType type = null;
             RuleFunction func = null;
             String category;
@@ -45,7 +44,6 @@ public class RuleDAO extends BaseDAO{
                 code = rs.getString("code");
                 table = rs.getString("targettable");
                 column = rs.getString("targetcolumn");
-                trigger = rs.getString("trigger_event");
                 type = getRuleTypebyID(rs.getInt("rule_type_id"));
                 func = getRuleFunctionbyID(rs.getInt("Function_type_id"));
                 if (rs.getString("category_type_id").equals("1")) {
@@ -53,7 +51,7 @@ public class RuleDAO extends BaseDAO{
                 } else {
                     category = "Dynamic";
                 }
-                r = new Rule(code, type, func, category, table, column, trigger);
+                r = new Rule(code, type, func, category, table, column);
             }
             rs.close();
             statement.close();
