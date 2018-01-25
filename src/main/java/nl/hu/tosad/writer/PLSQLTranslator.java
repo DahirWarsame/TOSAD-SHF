@@ -125,6 +125,12 @@ public class PLSQLTranslator extends Translator{
         String result = "";
 
         switch (code){
+	        case "I" :
+	            result = "IN";
+	            break;
+	        case "NI" :
+	            result = "NOT IN";
+	            break;
             case "B" :
                 result = "BETWEEN";
                 break;
@@ -132,10 +138,10 @@ public class PLSQLTranslator extends Translator{
                 result = "NOT BETWEEN";
                 break;
             case "NE" :
-                result =  "=!";
+                result = "!=";
                 break;
             case "E" :
-                result = "=!";
+                result = "!=";
                 break;
             case "LT" :
                 result = "<";
