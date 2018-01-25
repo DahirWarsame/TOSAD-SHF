@@ -7,11 +7,9 @@ public class Rule {
     private String category;
     private String table;
     private String attribute;
-    private String trigger;
 
 
-    public Rule(String code, RuleType type, RuleFunction func, String category, String table, String attribute,
-                String trigger) {
+    public Rule(String code, RuleType type, RuleFunction func, String category, String table, String attribute) {
         super();
         this.code = code;
         this.type = type;
@@ -19,7 +17,6 @@ public class Rule {
         this.category = category;
         this.table = table;
         this.attribute = attribute;
-        this.trigger = trigger;
     }
 
     public String getCode() {
@@ -28,14 +25,6 @@ public class Rule {
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public String getTrigger() {
-        return trigger;
-    }
-
-    public void setTrigger(String trig) {
-        this.trigger = trig;
     }
 
     public RuleType getType() {
@@ -79,7 +68,6 @@ public class Rule {
                 ", category='" + category + '\'' +
                 ", table='" + table + '\'' +
                 ", attribute='" + attribute + '\'' +
-                ", trigger='" + trigger + '\'' +
                 '}';
     }
 }
