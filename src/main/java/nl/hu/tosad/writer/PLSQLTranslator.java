@@ -18,7 +18,7 @@ public class PLSQLTranslator extends Translator{
 
     public String generateCode(Rule rule, String name) {
         StringBuilder result = new StringBuilder("CREATE OR REPLACE TRIGGER " + name);
-        result.append("\nBEFORE ").append(rule.getTrigger());
+        result.append("\nBEFORE UPDATE OR INSERT ");
         result.append("\nON ").append(rule.getTable());
         result.append("\nFOR EACH ROW");
 
@@ -158,7 +158,7 @@ public class PLSQLTranslator extends Translator{
         String result = "";
 
         result += "\nHERE BE CONSTRAINT OF TYPE " + rule.getType().getDesc() + "\n";
-        result += "\n\tAFTER " + rule.getTrigger();
+        result += "\n\tAFTER UPDATE OR INSERT OR DELETE";
         result += "\n\tON " + rule.getTable();
         result += "\n\tCONCERNING " + rule.getAttribute() + "\n";
         result += "\nCORRECT AND COMPLETE PL SQL STATEMENT WILL FOLLOW SOON(TM)";
