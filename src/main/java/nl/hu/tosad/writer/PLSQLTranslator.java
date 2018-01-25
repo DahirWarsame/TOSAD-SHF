@@ -141,7 +141,7 @@ public class PLSQLTranslator extends Translator{
                 result = "!=";
                 break;
             case "E" :
-                result = "!=";
+                result = "=";
                 break;
             case "LT" :
                 result = "<";
