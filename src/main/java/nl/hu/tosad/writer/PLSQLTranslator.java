@@ -95,7 +95,7 @@ public class PLSQLTranslator extends Translator{
 
                 result.append("\nBEGIN");
                 result.append("\n\tIF (NOT (:new.").append(rule.getAttribute()).append(" ");
-                result.append(translateOperator(tupleCompareFunction.getType())).append(" ");
+                result.append(translateOperator(tupleCompareFunction.getType())).append(" :new.");
                 result.append(tupleCompareFunction.getValue()).append("))");
                 result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'").append(name).append(" was triggered\');");
                 result.append("\n\tEND IF;");
