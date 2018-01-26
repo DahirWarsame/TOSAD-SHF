@@ -36,7 +36,6 @@ public class RuleDAO extends BaseDAO{
             String code;
             String table;
             String column;
-            String trigger;
             RuleType type = null;
             RuleFunction func = null;
             String category;
@@ -45,7 +44,6 @@ public class RuleDAO extends BaseDAO{
                 code = rs.getString("code");
                 table = rs.getString("targettable");
                 column = rs.getString("targetcolumn");
-                trigger = rs.getString("trigger_event");
                 type = getRuleTypebyID(rs.getInt("rule_type_id"));
                 func = getRuleFunctionbyID(rs.getInt("Function_type_id"));
                 if (rs.getString("category_type_id").equals("1")) {
@@ -53,7 +51,7 @@ public class RuleDAO extends BaseDAO{
                 } else {
                     category = "Dynamic";
                 }
-                r = new Rule(code, type, func, category, table, column, trigger);
+                r = new Rule(code, type, func, category, table, column);
             }
             rs.close();
             statement.close();
@@ -172,5 +170,22 @@ public class RuleDAO extends BaseDAO{
        }
        return rt;
    }
+       public Boolean ApplyRule(String generatedCode) {
+	  	Boolean succes= false;
+        try (Connection conn = super.getConnection()) {
+            conn.createStatement().execute("alter session set current_schema=TOSAD_2017_2C_TEAM2_TARGET");
+            PreparedStatement statement = conn.prepareStatement(generatedCode);
+            statement.executeUpdate();
+ 
+            statement.close();
+            conn.close();
+            succes=true;
+       
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(succes);
+        return succes;
+    }
 }
 

@@ -12,7 +12,7 @@ public class RuleResource {
 	WriterInterface writer=new WriterInterface();
 	DataInterface data=new DataInterface();
 	
-	@Path("get/{id}/{lan}")
+	@Path("get/{id}/{lan}/{type}")
 	@GET
 	public String printRule(@PathParam("id") String code, @PathParam("lan") String language) throws Exception {
 		writer.print(code, writer.generateCode(data.getRuleByID(code), code, language));

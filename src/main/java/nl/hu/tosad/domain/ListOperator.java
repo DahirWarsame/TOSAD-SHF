@@ -22,9 +22,14 @@ public class ListOperator extends RuleFunction {
     public void setType(String type) {
         this.type = type;
     }
-    public ArrayList<String> getList(){
-        List<String> items;
-        items =  Arrays.asList(this.list.split(","));
-        return (ArrayList<String>) items;
+
+    public String getList() {
+        return this.list;
     }
+
+//    public ArrayList<String> getList(){
+//        List<String> items;
+//        items =  Arrays.asList(this.list.split(","));
+//        return (ArrayList<String>) items;
+//    }
 }

@@ -6,32 +6,10 @@ public class CompareOperator extends RuleFunction {
 
     public CompareOperator(String id, String code, String value, String type) {
         super(id,code);
-        this.type = defineOperator(type);
+        this.type = type;
         this.value = value;
     }
-    private String defineOperator(String operatorType) {
-        switch (operatorType){
-            case "NE" :
-                operatorType =  "=!";
-                break;
-            case "E" :
-                operatorType = "=!";
-                break;
-            case "LT" :
-                operatorType = "<";
-                break;
-            case "GT" :
-                operatorType = ">";
-                break;
-            case "LOET" :
-                operatorType = "<=";
-                break;
-            case "GOET" :
-                operatorType = ">=";
-                break;
-        }
-        return operatorType;
-    }
+
     public String getType() {
         return type;
     }
