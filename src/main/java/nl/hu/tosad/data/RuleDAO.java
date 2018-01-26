@@ -170,5 +170,22 @@ public class RuleDAO extends BaseDAO{
        }
        return rt;
    }
+       public Boolean ApplyRule(String generatedCode) {
+	  	Boolean succes= false;
+        try (Connection conn = super.getConnection()) {
+            conn.createStatement().execute("alter session set current_schema=TOSAD_2017_2C_TEAM2_TARGET");
+            PreparedStatement statement = conn.prepareStatement(generatedCode);
+            statement.executeUpdate();
+ 
+            statement.close();
+            conn.close();
+            succes=true;
+       
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        System.out.println(succes);
+        return succes;
+    }
 }
 
