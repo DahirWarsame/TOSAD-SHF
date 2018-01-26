@@ -16,6 +16,15 @@ public class RuleResource {
 	@GET
 	public String printRule(@PathParam("id") String code, @PathParam("lan") String language) throws Exception {
 		writer.print(code, writer.generateCode(data.getRuleByID(code), code, language));
-		return "Rule collected!";
+		return "Rule Written to Sql file!";
 	}
+
+	@Path("Apply/{id}/{lan}/{type}")
+	@GET
+	public String ApplyRule(@PathParam("id") String code, @PathParam("lan") String language) throws Exception {
+		String generatedcode = writer.generateCode(data.getRuleByID(code), code, language);
+		data.ApplyRule(generatedcode);
+		return "Rule Applied";
+	}
+
 }
