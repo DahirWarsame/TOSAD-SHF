@@ -24,8 +24,16 @@ public class PLSQLTranslator implements Translator{
 	
 	
     private String generateConstraint(Rule rule, String name) {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder result = new StringBuilder("ALTER TABLE " + rule.getTable());
+
+		String ruleCode = rule.getType().getCode() + rule.getFunction().getCode();
+
+		switch (ruleCode) {
+            default :
+                result = new StringBuilder("This constraint can currently not be translated to PL SQL");
+                break;
+        }
+		return result.toString();
 	}
 
 
@@ -124,10 +132,18 @@ public class PLSQLTranslator implements Translator{
             case "ICMP" :
                 CompareOperator entityCompareFunction = ((CompareOperator) rule.getFunction());
 
+                result.append("\n\tCURSOR lc IS");
+                result.append("\n\tSELECT TOP 1" + rule.getType().getOtherattribute());
+                result.append("\n\tFROM " + rule.getType().getOthertable());
+                result.append("\n\tl_" + rule.getType().getOtherattribute() + " " + rule.getType().getOthertable() + "." + rule.getType().getOtherattribute() + "%type");
+
                 result.append("\nBEGIN");
+                result.append("\n\tOPEN lc;");
+                result.append("\n\tFETCH lc INTO l_" + rule.getType().getOtherattribute() + ";");
+                result.append("\n\tCLOSE lc;");
                 result.append("\n\tIF (NOT (:new.").append(rule.getTable()).append(".").append(rule.getAttribute());
-                result.append(" ").append(translateOperator(entityCompareFunction.getType())).append(" :new.");
-                result.append(rule.getType().getOthertable()).append(".").append(rule.getType().getOtherattribute());
+                result.append(" ").append(translateOperator(entityCompareFunction.getType()));
+                result.append("l_" + rule.getType().getOtherattribute());
                 result.append("))");
                 result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'").append(name).append(" was triggered\');");
                 result.append("\n\tEND IF;");
