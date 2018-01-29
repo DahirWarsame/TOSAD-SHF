@@ -39,28 +39,28 @@ public class PLSQLTranslator implements Translator{
 
         switch (ruleCode) {
             case "ARNG" :
-                RangeOperator rangeFunction = ((RangeOperator) rule.getFunction());
+                RangeOperator attributeRangeFunction = ((RangeOperator) rule.getFunction());
 
                 result.append("\nBEGIN");
                 result.append("\n\tIF (NOT (:new."+rule.getAttribute());
-                result.append(" ").append(translateOperator(rangeFunction.getType())).append(" ");
-                result.append(rangeFunction.getMin()+" AND "+rangeFunction.getMax() + "))");
+                result.append(" ").append(translateOperator(attributeRangeFunction.getType())).append(" ");
+                result.append(attributeRangeFunction.getMin()+" AND "+attributeRangeFunction.getMax() + "))");
                 result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'" + name + " was triggered\');");
                 result.append("\n\tEND IF;");
                 result.append("\nEND ").append(name).append(";");
                 break;
 
             case "ACMP" :
-                CompareOperator compareFunction = ((CompareOperator) rule.getFunction());
+                CompareOperator attributeCompareFunction = ((CompareOperator) rule.getFunction());
 
                 result.append("\nBEGIN");
                 result.append("\n\tIF (NOT (:new.").append(rule.getAttribute());
-                result.append(" ").append(translateOperator(compareFunction.getType())).append(" ");
-                if (isNumeric(compareFunction.getValue())){
-                    result.append(compareFunction.getValue() + "))");
+                result.append(" ").append(translateOperator(attributeCompareFunction.getType())).append(" ");
+                if (isNumeric(attributeCompareFunction.getValue())){
+                    result.append(attributeCompareFunction.getValue() + "))");
                 }
                 else{
-                    result.append("\'"+compareFunction.getValue() + "\'))");
+                    result.append("\'"+attributeCompareFunction.getValue() + "\'))");
                 }
                 result.append("\n\tTHEN");
                 result.append("\n\tRAISE_APPLICATION_ERROR (-20001,\'").append(name).append(" was triggered\');");
@@ -70,13 +70,13 @@ public class PLSQLTranslator implements Translator{
                 break;
 
             case "ALIS" :
-            	ListOperator listFunction = ((ListOperator) rule.getFunction());
+            	ListOperator attributeListFunction = ((ListOperator) rule.getFunction());
 
-            	List<String> list = new ArrayList<String>(Arrays.asList(listFunction.getList().split(",")));
+            	List<String> list = new ArrayList<String>(Arrays.asList(attributeListFunction.getList().split(",")));
                 int count = 0;
                 result.append("\nBEGIN");
                 result.append("\n\tIF (NOT (:new."+rule.getAttribute());
-                result.append(" "+translateOperator(listFunction.getType())+" (");
+                result.append(" "+translateOperator(attributeListFunction.getType())+" (");
                 for (String s : list){
                     count+=1;
                     if (isNumeric(s)==true){
@@ -96,11 +96,10 @@ public class PLSQLTranslator implements Translator{
                 break;
 
             case "AOTH" :
-                Other otherFunction = ((Other) rule.getFunction());
+                Other attributeOtherFunction = ((Other) rule.getFunction());
 
-                result.append("\nBEGIN\n\t");
-                result.append(otherFunction.getBody());
-                result.append("\nEND ").append(name).append(";");
+                result.append(attributeOtherFunction.getBody());
+                result.append(name).append(";");
                 break;
 
             case "TCMP" :
@@ -109,7 +108,7 @@ public class PLSQLTranslator implements Translator{
                 result.append("\nBEGIN");
                 result.append("\n\tIF (NOT (:new.").append(rule.getAttribute()).append(" ");
                 result.append(translateOperator(tupleCompareFunction.getType())).append(" :new.");
-                result.append(tupleCompareFunction.getValue()).append("))");
+                result.append(rule.getType().getOtherattribute()).append("))");
                 result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'").append(name).append(" was triggered\');");
                 result.append("\n\tEND IF;");
                 result.append("\nEND ").append(name).append(";");
@@ -118,13 +117,28 @@ public class PLSQLTranslator implements Translator{
             case "TOTH" :
                 Other tupleOtherFunction = ((Other) rule.getFunction());
 
-                result.append("\nBEGIN\n\t");
                 result.append(tupleOtherFunction.getBody());
-                result.append("\nEND ").append(name).append(";");
+                result.append(name).append(";");
                 break;
 
             case "ICMP" :
+                CompareOperator entityCompareFunction = ((CompareOperator) rule.getFunction());
 
+                result.append("\nBEGIN");
+                result.append("\n\tIF (NOT (:new.").append(rule.getTable()).append(".").append(rule.getAttribute());
+                result.append(" ").append(translateOperator(entityCompareFunction.getType())).append(" :new.");
+                result.append(rule.getType().getOthertable()).append(".").append(rule.getType().getOtherattribute());
+                result.append("))");
+                result.append("\n\tTHEN RAISE_APPLICATION_ERROR(-20000, \'").append(name).append(" was triggered\');");
+                result.append("\n\tEND IF;");
+                result.append("\nEND ").append(name).append(";");
+                break;
+
+            case "EOTH" :
+                Other entityOtherFunction = ((Other) rule.getFunction());
+
+                result.append(entityOtherFunction.getBody());
+                result.append(name).append(";");
                 break;
 
             default :
