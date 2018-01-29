@@ -5,21 +5,22 @@ import java.io.IOException;
 import nl.hu.tosad.domain.Rule;
 
 public class WriterInterface {
-	FilePrinter printer=new FilePrinter();
+	FilePrinter printer = new FilePrinter();
 
-public String generateCode(Rule rule, String name, String language) throws Exception{
-	Translator trans=null;
-	if (language.equals("PLSQL")){
-		trans=new PLSQLTranslator();
-	}
-	else{
-		throw new Exception("No translator found for the input language");
-	}
-	return trans.generateCode(rule, name);
-}
+	public String generateCode(Rule rule, String name, String language) {
+		try {
+			TranslatorFactory transFactory = new TranslatorFactory();
 
-public void print(String name, String output) throws IOException {
-	printer.print(name, output);
-	
-}
+			Translator trans = transFactory.getTranslator(language);
+
+			return trans.generateCode(rule, name);
+		} catch (NullPointerException e) {
+			return ("Translator niet beschikbaar");
+		}
+	}
+
+	public void print(String name, String output) throws IOException {
+		printer.print(name, output);
+
+	}
 }

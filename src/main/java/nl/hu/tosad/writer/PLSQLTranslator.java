@@ -10,12 +10,9 @@ import nl.hu.tosad.domain.Other;
 import nl.hu.tosad.domain.RangeOperator;
 import nl.hu.tosad.domain.Rule;
 
-public class PLSQLTranslator extends Translator{
+public class PLSQLTranslator implements Translator{
 
-    public PLSQLTranslator() {
-
-    }
-
+	@Override
     public String generateCode(Rule rule, String name) {
         StringBuilder result = new StringBuilder("CREATE OR REPLACE TRIGGER " + name);
         result.append("\nBEFORE UPDATE OR INSERT ");
