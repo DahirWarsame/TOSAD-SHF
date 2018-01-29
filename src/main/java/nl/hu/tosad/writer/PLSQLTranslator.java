@@ -12,8 +12,24 @@ import nl.hu.tosad.domain.Rule;
 
 public class PLSQLTranslator implements Translator{
 
-	@Override
-    public String generateCode(Rule rule, String name) {
+	public String generateCode(Rule rule, String name, String type){
+		if (type.equals("Trigger")){
+			return generateTrigger(rule, name);
+		}
+		else if (type.equals("Constraint")){
+			return generateConstraint(rule,name);
+		}
+		return "Geen geldig type gegeven";
+	}
+	
+	
+    private String generateConstraint(Rule rule, String name) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	public String generateTrigger(Rule rule, String name) {
         StringBuilder result = new StringBuilder("CREATE OR REPLACE TRIGGER " + name);
         result.append("\nBEFORE UPDATE OR INSERT ");
         result.append("\nON ").append(rule.getTable());

@@ -14,15 +14,15 @@ public class RuleResource {
 	
 	@Path("get/{id}/{lan}/{type}")
 	@GET
-	public String printRule(@PathParam("id") String code, @PathParam("lan") String language) throws Exception {
-		writer.print(code, writer.generateCode(data.getRuleByID(code), code, language));
+	public String printRule(@PathParam("id") String code, @PathParam("lan") String language, @PathParam("type") String type) throws Exception {
+		writer.print(code, writer.generateCode(data.getRuleByID(code), code, language, type));
 		return "Rule Written to Sql file!";
 	}
 
 	@Path("Apply/{id}/{lan}/{type}")
 	@GET
-	public String ApplyRule(@PathParam("id") String code, @PathParam("lan") String language) throws Exception {
-		String generatedcode = writer.generateCode(data.getRuleByID(code), code, language);
+	public String ApplyRule(@PathParam("id") String code, @PathParam("lan") String language, @PathParam("type") String type) throws Exception {
+		String generatedcode = writer.generateCode(data.getRuleByID(code), code, language, type);
 		data.ApplyRule(generatedcode);
 		return "Rule Applied";
 	}
