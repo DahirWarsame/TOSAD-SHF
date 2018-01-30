@@ -4,13 +4,13 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-import nl.hu.tosad.data.DataInterface;
-import nl.hu.tosad.writer.WriterInterface;
+import nl.hu.tosad.data.DataController;
+import nl.hu.tosad.writer.WriterController;
 
 @Path("rule")
 public class RuleResource {
-	WriterInterface writer=new WriterInterface();
-	DataInterface data=new DataInterface();
+	WriterController writer=new WriterController();
+	DataController data=new DataController();
 	
 	@Path("get/{id}/{lan}/{type}")
 	@GET
