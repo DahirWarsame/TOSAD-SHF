@@ -24,7 +24,7 @@ public class PLSQLTranslator implements Translator{
 	
 	
     private String generateConstraint(Rule rule, String name) {
-		StringBuilder result = new StringBuilder("ALTER TABLE");
+		StringBuilder result = new StringBuilder("ALTER TABLE ");
 		result.append("\n\t" + rule.getTable());
 		result.append("\nADD CONSTRAINT");
 		result.append("\n\t" + name);
@@ -38,7 +38,7 @@ public class PLSQLTranslator implements Translator{
 
                 result.append("\n\t(" + rule.getAttribute() + " " + translateOperator(attributeRangeFunction.getType()));
                 result.append(" " + attributeRangeFunction.getMin() + " AND " + attributeRangeFunction.getMax() + ")");
-                result.append("\n);");
+                result.append("\n;");
                 break;
 
             case "ACMP" :
@@ -52,7 +52,7 @@ public class PLSQLTranslator implements Translator{
                 else {
                     result.append("\'" + attributeCompareFunction.getValue() + "\')");
                 }
-                result.append("\n);");
+                result.append("\n;");
                 break;
 
             case "ALIS" :
@@ -76,7 +76,7 @@ public class PLSQLTranslator implements Translator{
                 }
                 result.append("\n\t\t)");
                 result.append("\n\t)");
-                result.append("\n);");
+                result.append("\n;");
                 break;
 
             case "TCMP" :
@@ -85,7 +85,7 @@ public class PLSQLTranslator implements Translator{
                 result.append("\n\t(" + rule.getAttribute() + " ");
                 result.append(translateOperator(tupleCompareFunction.getType()) + " ");
                 result.append(rule.getType().getOtherattribute() + ")");
-                result.append("\n);");
+                result.append("\n;");
                 break;
 
             default :
