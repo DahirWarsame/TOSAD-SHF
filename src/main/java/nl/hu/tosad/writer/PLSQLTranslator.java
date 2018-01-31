@@ -191,6 +191,7 @@ public class PLSQLTranslator implements Translator{
             case "ICMP" :
                 CompareOperator entityCompareFunction = ((CompareOperator) rule.getFunction());
 
+                result.append("\nDECLARE");
                 result.append("\n\tCURSOR lc IS");
                 result.append("\n\tSELECT TOP 1" + rule.getType().getOtherattribute());
                 result.append("\n\tFROM " + rule.getType().getOthertable());
